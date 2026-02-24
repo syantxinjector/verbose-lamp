@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lmz Tools Premium Shop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #000000;
+            min-height: 100vh;
+            color: #ffffff;
+        }
+
+        /* Country Selection - Direct Show */
+        .country-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+            padding: 20px;
+        }
+
+        .country-modal.hidden {
+            display: none;
+        }
+
+        .country-box {
+            background: #111;
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #222;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .country-title {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 25px;
+            color: #fff;
+        }
+
+        .country-title span {
+            color: #00ff88;
+        }
+
+        .country-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .country-item {
+            background: #0a0a0a;
+            border: 2px solid #222;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .country-item:hover {
+            border-color: #00ff88;
+            background: #001a0f;
+            transform: translateX(5px);
+        }
+
+        .country-flag {
+            font-size: 32px;
+        }
+
+        .country-name {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .country-check {
+            margin-left: auto;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: transparent;
+            transition: all 0.3s;
+        }
+
+        .country-item.selected .country-check {
+            background: #00ff88;
+            border-color: #00ff88;
+            color: #000;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: none;
+            padding: 20px 16px;
+            animation: slideIn 0.3s;
+        }
+
+        .main-content.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 20px 0 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .country-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #111;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+            border: 1px solid #222;
+        }
+
+        /* Telegram Join Button */
+        .telegram-banner {
+            background: linear-gradient(135deg, #0088cc 0%, #00a8e6 100%);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .telegram-banner:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 136, 204, 0.4);
+        }
+
+        .telegram-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .telegram-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .telegram-text {
+            font-size: 14px;
+        }
+
+        .telegram-text strong {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .telegram-text small {
+            opacity: 0.9;
+            font-size: 12px;
+        }
+
+        .join-btn {
+            background: #fff;
+            color: #0088cc;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* Card Container */
+        .card {
+            background: #111111;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid #222;
+        }
+
+        .card-title {
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        /* Plan Options */
+        .plan-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .plan-item {
+            background: #0a0a0a;
+            border: 1.5px solid #222;
+            border-radius: 12px;
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .plan-item:hover {
+            border-color: #333;
+        }
+
+        .plan-item.selected {
+            border-color: #00ff88;
+            background: #001a0f;
+        }
+
+        .plan-name {
+            font-size: 16px;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .plan-price {
+            font-size: 18px;
+            color: #00ff88;
+            font-weight: 600;
+        }
+
+        /* Payment Info */
+        .payment-info {
+            background: #0a0a0a;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #222;
+        }
+
+        .payment-type {
+            color: #00ff88;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .payment-detail {
+            color: #aaa;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .payment-detail span {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .copy-btn {
+            background: #222;
+            color: #00ff88;
+            border: 1px solid #333;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #333;
+        }
+
+        /* Payment Method Selection */
+        .payment-method-list {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .payment-method-btn {
+            background: #0a0a0a;
+            border: 1.5px solid #222;
+            border-radius: 10px;
+            padding: 12px 20px;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .payment-method-btn:hover {
+            border-color: #333;
+        }
+
+        .payment-method-btn.selected {
+            border-color: #00ff88;
+            background: #001a0f;
+            color: #00ff88;
+        }
+
+        /* Device ID Input */
+        .input-field {
+            width: 100%;
+            background: #0a0a0a;
+            border: 1.5px solid #222;
+            border-radius: 12px;
+            padding: 16px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .input-field:focus {
+            border-color: #00ff88;
+        }
+
+        .input-field::placeholder {
+            color: #666;
+        }
+
+        /* File Upload */
+        .upload-area {
+            background: #0a0a0a;
+            border: 1.5px dashed #333;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: #00ff88;
+        }
+
+        .upload-area.has-file {
+            border-style: solid;
+            border-color: #00ff88;
+            background: #001a0f;
+            padding: 15px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+            opacity: 0.5;
+        }
+
+        .upload-text {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .upload-text small {
+            display: block;
+            color: #444;
+            margin-top: 4px;
+            font-size: 12px;
+        }
+
+        .upload-preview {
+            width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .upload-area.has-file .upload-icon,
+        .upload-area.has-file .upload-text {
+            display: none;
+        }
+
+        .upload-area.has-file .upload-preview {
+            display: block;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            background: #00ff88;
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            padding: 18px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #00cc6a;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Support Section */
+        .support-card {
+            background: linear-gradient(135deg, #111 0%, #0a0a0a 100%);
+            border: 1px solid #222;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .support-title {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .telegram-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #0088cc;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .telegram-link:hover {
+            background: #00a8e6;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 136, 204, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            color: #444;
+            font-size: 12px;
+        }
+
+        /* Loading Overlay */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .loading.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #222;
+            border-top-color: #00ff88;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            color: #00ff88;
+            font-size: 16px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #00ff88;
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1001;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Country Selection - Direct Show -->
+    <div class="country-modal" id="countryModal">
+        <div class="country-box">
+            <div class="country-title" id="selectCountryTitle">Select Your <span>Country</span></div>
+            <div class="country-list">
+                <div class="country-item" onclick="selectCountry('Philippines', '🇵🇭')">
+                    <span class="country-flag">🇵🇭</span>
+                    <span class="country-name">Philippines</span>
+                    <span class="country-check">✓</span>
+                </div>
+                <div class="country-item" onclick="selectCountry('Myanmar', '🇲🇲')">
+                    <span class="country-flag">🇲🇲</span>
+                    <span class="country-name">Myanmar</span>
+                    <span class="country-check">✓</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="header">
+            <h1 id="shopTitle">Lmz Tools Premium Shop</h1>
+            <div class="country-badge">
+                <span id="selectedFlag">🇲🇲</span>
+                <span id="selectedCountry">Myanmar</span>
+            </div>
+        </div>
+
+        <!-- Telegram Join Banner -->
+        <a href="https://t.me/Lmztoolmyanmar" target="_blank" class="telegram-banner" id="telegramBanner">
+            <div class="telegram-info">
+                <div class="telegram-icon">✈️</div>
+                <div class="telegram-text">
+                    <strong id="telegramTitle">Join Our Telegram</strong>
+                    <small id="telegramSub">Get updates & support</small>
+                </div>
+            </div>
+            <div class="join-btn" id="joinBtn">Join</div>
+        </a>
+
+        <!-- Choose Plan -->
+        <div class="card">
+            <div class="card-title" id="planTitle">Choose Plan</div>
+            <div class="plan-list" id="planList">
+                <!-- Plans will be inserted by JS -->
+            </div>
+        </div>
+
+        <!-- Payment Info -->
+        <div class="card">
+            <div class="card-title" id="paymentInfoTitle">Payment Information</div>
+            
+            <div id="paymentDetails">
+                <!-- Payment details will be inserted by JS -->
+            </div>
+
+            <div class="card-title" style="margin-top: 20px;" id="paymentMethodTitle">Select Payment Method</div>
+            <div class="payment-method-list" id="paymentMethodList">
+                <!-- Payment methods will be inserted by JS -->
+            </div>
+        </div>
+
+        <!-- Device ID & Upload -->
+        <div class="card">
+            <div class="card-title" id="deviceIdTitle">Device ID</div>
+            <input type="text" class="input-field" id="deviceId" placeholder="Enter your device ID...">
+            
+            <div class="card-title" style="margin-top: 20px;" id="uploadTitle">Upload Payment Screenshot</div>
+            <div class="upload-area" onclick="document.getElementById('fileInput').click()" id="uploadArea">
+                <div class="upload-icon">📤</div>
+                <div class="upload-text" id="uploadText">
+                    Tap to upload screenshot
+                    <small>Payment proof required</small>
+                </div>
+                <img class="upload-preview" id="previewImage" alt="Preview">
+            </div>
+            <input type="file" class="file-input" id="fileInput" accept="image/*" onchange="handleFile(this)">
+            
+            <button class="submit-btn" onclick="submitOrder()" id="submitBtn">Submit Order</button>
+        </div>
+
+        <!-- Support Section -->
+        <div class="support-card">
+            <div class="support-title" id="supportTitle">Need Help? Contact Us</div>
+            <a href="https://t.me/C9AKcpn" target="_blank" class="telegram-link">
+                <span>✈️</span>
+                <span id="contactText">Contact Support</span>
+            </a>
+        </div>
+
+        <div class="footer">
+            <span id="footerText">Lmz Tools Secure Order System</span><br>
+            <small>t.me/C9AKcpn</small>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loadingText">Sending order...</div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">Copied!</div>
+
+    <script>
+        // Bot Config
+        const BOT_TOKEN = '8596209737:AAEIdV0N3GNC9hq-8HCXoyddsiEsbuiyV0Y';
+        const CHAT_ID = '6912974998';
+        
+        let selectedCountry = null;
+        let selectedPlan = null;
+        let selectedPlanPrice = null;
+        let selectedPaymentMethod = null;
+        let selectedFile = null;
+
+        // Translations
+        const translations = {
+            Philippines: {
+                selectCountry: 'Select Your <span>Country</span>',
+                shopTitle: 'Lmz Tools Premium Shop',
+                telegramTitle: 'Join Our Telegram',
+                telegramSub: 'Get updates & support',
+                joinBtn: 'Join',
+                planTitle: 'Choose Plan',
+                paymentInfoTitle: 'Payment Information',
+                gcash: 'GCASH',
+                paypal: 'PAYPAL',
+                paymentMethodTitle: 'Select Payment Method',
+                deviceIdTitle: 'Device ID',
+                deviceIdPlaceholder: 'Enter your device ID...',
+                uploadTitle: 'Upload Payment Screenshot',
+                uploadText: 'Tap to upload screenshot',
+                uploadSub: 'Payment proof required',
+                submitBtn: 'Submit Order',
+                supportTitle: 'Need Help? Contact Us',
+                contactText: 'Contact Support',
+                footerText: 'Lmz Tools Secure Order System',
+                loadingText: 'Sending order...',
+                copySuccess: 'Copied!',
+                alertSelectPlan: '⚠️ Please select a plan',
+                alertSelectPayment: '⚠️ Please select payment method',
+                alertDeviceId: '⚠️ Please enter Device ID',
+                alertUpload: '⚠️ Please upload payment screenshot',
+                orderSuccess: '✅ Order submitted! Join t.me/C9AKcpn for updates',
+                orderError: '❌ Error: ',
+                orderSent: '✓ Order Sent!',
+                plans: [
+                    { name: '15 DAYS ACCESS', price: 200, currency: 'GCASH', days: '15days', display: '200 GCASH / $5 PAYPAL' },
+                    { name: '30 DAYS ACCESS', price: 400, currency: 'GCASH', days: '30days', display: '400 GCASH / $6 PAYPAL' },
+       
