@@ -3,340 +3,224 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta charset="UTF-8">
-<title>LmzTools Premium Shop</title>
+<title>LMZTools Premium Shop</title>
 
 <style>
-
-body{
-background:#050505;
-color:white;
-font-family:Arial;
-margin:0;
-}
-
-.header{
-padding:18px;
-text-align:center;
-font-size:22px;
-font-weight:bold;
-background:#0d0d0d;
-border-bottom:1px solid #222;
-letter-spacing:1px;
-}
-
-.logo{
-text-align:center;
-padding:20px;
-}
-
-.logo img{
-width:120px;
-border-radius:24px;
-box-shadow:0 0 20px rgba(0,255,156,.3);
-}
-
-.container{
-padding:15px;
-max-width:500px;
-margin:auto;
-}
-
-.box{
-background:#101010;
-border-radius:16px;
-padding:18px;
-margin-bottom:15px;
-border:1px solid #222;
-}
-
-.title{
-font-size:13px;
-opacity:.8;
-margin-bottom:6px;
-}
-
-.plan{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px;
-margin-bottom:10px;
-border-radius:12px;
-background:#0a0a0a;
-border:1px solid #222;
-cursor:pointer;
-transition:.2s;
-}
-
-.plan:hover{
-border:1px solid #00ff9c;
-transform:scale(1.02);
-}
-
-.selected{
-border:1px solid #00ff9c;
-box-shadow:0 0 10px rgba(0,255,156,.3);
-}
-
-input,select{
-width:100%;
-padding:12px;
-border-radius:10px;
-border:none;
-background:#0a0a0a;
-color:white;
-margin-top:6px;
-border:1px solid #222;
-}
-
-input:focus,select:focus{
-outline:none;
-border:1px solid #00ff9c;
-}
-
-button{
-width:100%;
-padding:14px;
-border:none;
-border-radius:12px;
-background:#00ff9c;
-font-weight:bold;
-margin-top:12px;
-font-size:15px;
-cursor:pointer;
-transition:.2s;
-}
-
-button:active{
-transform:scale(.96);
-}
-
-.contact{
-background:#1f8bff;
-color:white;
-}
-
-.note{
-font-size:13px;
-opacity:.9;
-line-height:1.6;
-margin-top:10px;
-background:#0a0a0a;
-padding:10px;
-border-radius:10px;
-border:1px solid #222;
-}
-
+body{background:#050505;color:white;font-family:Arial;margin:0;}
+.header{padding:18px;text-align:center;font-size:22px;font-weight:bold;background:#0d0d0d;border-bottom:1px solid #222;}
+.logo{text-align:center;padding:20px;}
+.logo img{width:120px;border-radius:20px;}
+.container{padding:15px;max-width:520px;margin:auto;}
+.box{background:#101010;border-radius:16px;padding:18px;margin-bottom:15px;border:1px solid #222;}
+.title{font-size:13px;opacity:.8;margin-bottom:6px;}
+.plan{display:flex;justify-content:space-between;padding:15px;margin-bottom:10px;border-radius:12px;background:#0a0a0a;border:1px solid #222;cursor:pointer;}
+.selected{border:1px solid #00ff9c;}
+input,select{width:100%;padding:12px;border-radius:10px;border:none;background:#0a0a0a;color:white;margin-top:6px;border:1px solid #222;}
+button{width:100%;padding:14px;border:none;border-radius:12px;background:#00ff9c;font-weight:bold;margin-top:12px;}
+.contact{background:#1f8bff;color:white;}
+.note{font-size:13px;margin-top:10px;background:#0a0a0a;padding:12px;border-radius:10px;border:1px solid #222;}
+.copy{color:#00ff9c;cursor:pointer;}
+.preview{margin-top:10px;max-width:100%;border-radius:10px;display:none;}
+.verify{position:fixed;top:0;left:0;right:0;bottom:0;background:#000000e6;display:none;align-items:center;justify-content:center;flex-direction:column;z-index:999;}
+.spinner{width:60px;height:60px;border:5px solid #333;border-top:5px solid #00ff9c;border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.bar{width:220px;height:8px;background:#222;border-radius:10px;overflow:hidden;margin-top:15px;}
+.fill{height:100%;width:0%;background:#00ff9c;}
+.admin{margin-top:30px;}
+.order{background:#0a0a0a;padding:10px;border-radius:8px;margin-top:8px;font-size:13px;}
 </style>
 </head>
-
 <body>
 
-<div class="header">
-LMZTools Premium Shop
-</div>
-
-<div class="logo">
-<img src="https://i.ibb.co/35yyY4bx/IMG-20260224-204311-990.png">
-</div>
+<div class="header">LMZTools Premium Shop</div>
 
 <div class="container">
 
 <div class="box">
+<div class="title">Select Service</div>
+<select id="service" onchange="changeService()">
+<option value="lmztools">LMZTools</option>
+<option value="nebula">Nebula Boost</option>
+</select>
+</div>
 
+<div class="logo" id="logoBox">
+<img src="https://i.ibb.co/35yyY4bx/IMG-20260224-204311-990.png">
+</div>
+
+<div class="box">
 <div class="title">Country</div>
 <select id="country" onchange="changeCountry()">
 <option value="">Select Country</option>
 <option value="ph">Philippines</option>
 <option value="mm">Myanmar</option>
 </select>
-
 </div>
 
 <div class="box" id="plans"></div>
 
 <div class="box">
-
-<div class="title">Payment Method</div>
+<div class="title">Payment</div>
 <select id="payment"></select>
 
 <div class="title">LMZ ID</div>
-<input id="device" placeholder="Enter your Lmz id">
+<input id="device">
 
-<div class="title">Upload Payment Screenshot</div>
-<input type="file" id="photo">
+<div class="title">Receipt</div>
+<input type="file" id="photo" onchange="preview()">
+
+<img id="imgPreview" class="preview">
 
 <button onclick="send()">Submit Order</button>
+<button class="contact" onclick="contactOwner()">Contact Owner</button>
+</div>
 
-<button class="contact" onclick="contactOwner()">
-Contact Owner
-</button>
+<div class="box admin">
+<div class="title">Recent Orders</div>
+<div id="orders"></div>
+</div>
 
 </div>
 
+<div class="verify" id="verifyBox">
+<div class="spinner"></div>
+<div style="margin-top:10px">AI Checking Payment...</div>
+<div class="bar">
+<div class="fill" id="barFill"></div>
+</div>
 </div>
 
 <script>
-
 let selectedPlan=""
+let botActive = true
 
-const BOT_TOKEN="8651118967:AAFrcX3jsrC4rXqOXQnpIIf3L-ugtdphFN8"
-const CHAT_ID="6300246784"
+// === Default LMZTools BOT ===
+let BOT_TOKEN1="8728141828:AAFykCg5W7oSoF5vup1zeflrL531P_S-cbo";
+let CHAT_ID1="8728141828";
 
+let BOT_TOKEN2="8651118967:AAFrcX3jsrC4rXqOXQnpIIf3L-ugtdphFN8";
+let CHAT_ID2="8651118967";
+
+// --- Service Selection ---
+function changeService(){
+let service=document.getElementById("service").value;
+let logoBox=document.getElementById("logoBox");
+if(service=="nebula"){
+// Hide logo / bot inactive
+logoBox.style.display="none";
+botActive=false;
+} else {
+// Show logo / bot active
+logoBox.style.display="block";
+botActive=true;
+}
+}
+
+// --- Order ID ---
+function orderID(){return "LMZ"+Math.floor(Math.random()*999999)}
+
+// --- Country / Plan ---
 function changeCountry(){
-
-let c=document.getElementById("country").value
-let plans=document.getElementById("plans")
-let payment=document.getElementById("payment")
-
-if(c=="ph"){
-
+if(country.value=="ph"){
 plans.innerHTML=`
-
-<div class="plan" onclick="pick(this,'Permanent')">
-<div>Permanent</div>
-<div>500 GCash / $7</div>
-</div>
-
-<div class="plan" onclick="pick(this,'30 Days')">
-<div>30 Days</div>
-<div>400 GCash / $6</div>
-</div>
-
-<div class="plan" onclick="pick(this,'15 Days')">
-<div>15 Days</div>
-<div>200 GCash / $5</div>
-</div>
-
+<div class="plan" onclick="pick(this,'Permanent')"><div>Permanent</div><div>12$</div></div>
+<div class="plan" onclick="pick(this,'30 Days')"><div>30 Days</div><div>11$</div></div>
+<div class="plan" onclick="pick(this,'15 Days')"><div>15 Days</div><div>10$</div></div>
 <div class="note">
-
-GCash Account<br>
-09771167734<br><br>
-
-PayPal<br>
-johnleomodz@gmail.com
-
+PayPal<br><span class="copy" onclick="copy('johnleomodz@gmail.com')">johnleomodz@gmail.com</span><br><br>
+Binance<br><span class="copy" onclick="copy('1178765602')">1178765602</span><br><br>
+GCash<br><span class="copy" onclick="copy('09771167734')">09771167734</span>
 </div>
-`
-
-payment.innerHTML=`
-<option>GCash</option>
-<option>PayPal</option>
-`
-
+`;
+payment.innerHTML=`<option>PayPal</option><option>Binance</option><option>GCash</option>`;
 }
 
-if(c=="mm"){
-
+if(country.value=="mm"){
 plans.innerHTML=`
-
-<div class="plan" onclick="pick(this,'15 Days')">
-<div>15 Days</div>
-<div>10,000 MMK</div>
-</div>
-
-<div class="plan" onclick="pick(this,'30 Days')">
-<div>30 Days</div>
-<div>15,000 MMK</div>
-</div>
-
-<div class="plan" onclick="pick(this,'Lifetime')">
-<div>Lifetime</div>
-<div>35,000 MMK</div>
-</div>
-
+<div class="plan" onclick="pick(this,'15 Days')"><div>15 Days</div><div>10,000 MMK</div></div>
+<div class="plan" onclick="pick(this,'30 Days')"><div>30 Days</div><div>15,000 MMK</div></div>
+<div class="plan" onclick="pick(this,'Lifetime')"><div>Lifetime</div><div>35,000 MMK</div></div>
 <div class="note">
-
-K Pay - 0943171889<br>
-Name - Hnin Yupar Aye<br><br>
-
-Wave - 09452893480<br>
-Name - Htwe Htwe Ei
-
+WAVE Account<br><span class="copy" onclick="copy('09452893480')">09452893480</span><br>Name - Htwe Htwe Ei<br><br>
+KPay Account<br><span class="copy" onclick="copy('09882754285')">09882754285</span><br>Name - Thiha Naing
 </div>
-`
-
-payment.innerHTML=`
-<option>K Pay</option>
-<option>Wave</option>
-`
-
+`;
+payment.innerHTML=`<option>WAVE</option><option>KPay</option>`;
 }
-
 }
 
 function pick(el,plan){
-
 selectedPlan=plan
-
-document.querySelectorAll(".plan").forEach(x=>{
-x.classList.remove("selected")
-})
-
+document.querySelectorAll(".plan").forEach(x=>x.classList.remove("selected"))
 el.classList.add("selected")
-
 }
 
+function copy(text){
+navigator.clipboard.writeText(text)
+alert("Copied : "+text)
+}
+
+function preview(){
+let file=photo.files[0]
+let reader=new FileReader()
+reader.onload=e=>{imgPreview.src=e.target.result;imgPreview.style.display="block";}
+reader.readAsDataURL(file)
+}
+
+// --- Send Order ---
 function send(){
+if(!selectedPlan){alert("Select Plan");return;}
+if(!photo.files[0]){alert("Upload Receipt"); return;}
 
-let device=document.getElementById("device").value
-let pay=document.getElementById("payment").value
-let country=document.getElementById("country").value
-let file=document.getElementById("photo").files[0]
+let id=orderID();
+verifyBox.style.display="flex";
 
-if(!selectedPlan){
-alert("Select Plan")
-return
+let w=0;
+let load=setInterval(()=>{
+w+=5; barFill.style.width=w+"%";
+if(w>=95) clearInterval(load);
+},120);
+
+let caption =
+"Order ID : "+id+
+"\nCountry : "+country.value+
+"\nPlan : "+selectedPlan+
+"\nPayment : "+payment.value+
+"\nLMZ ID : "+device.value;
+
+function sendBot(token,chat){
+if(!botActive) return Promise.resolve({ok:true});
+let form=new FormData();
+form.append("chat_id",chat);
+form.append("photo",photo.files[0]);
+form.append("caption",caption);
+return fetch("https://api.telegram.org/bot"+token+"/sendPhoto",{method:"POST",body:form}).then(r=>r.json());
 }
 
-if(!file){
-alert("Upload Payment Screenshot")
-return
-}
-
-let form=new FormData()
-
-form.append("chat_id",CHAT_ID)
-form.append("photo",file)
-
-form.append("caption",
-"LmzTools Order\n\n"+
-"Country: "+country+"\n"+
-"Plan: "+selectedPlan+"\n"+
-"Payment: "+pay+"\n"+
-"Lmz id: "+device
-)
-
-fetch("https://api.telegram.org/bot"+BOT_TOKEN+"/sendPhoto",{
-method:"POST",
-body:form
+Promise.all([sendBot(BOT_TOKEN1,CHAT_ID1),sendBot(BOT_TOKEN2,CHAT_ID2)])
+.then(res=>{
+barFill.style.width="100%";
+setTimeout(()=>{
+verifyBox.style.display="none";
+alert("Successfully Submitted");
+let div=document.createElement("div");
+div.className="order";
+div.innerHTML="Order "+id+"<br>"+selectedPlan+" | "+payment.value;
+orders.prepend(div);
+},600);
 })
-.then(r=>r.json())
-.then(d=>{
-alert("Order Sent To Admin")
-})
-
+.catch(err=>{
+verifyBox.style.display="none";
+alert("Error sending order");
+console.log(err);
+});
 }
 
 function contactOwner(){
-
-let country=document.getElementById("country").value
-
-if(country=="ph"){
-window.open("https://t.me/Lmodz01")
+if(country.value=="ph"){window.open("https://t.me/Lmodz01")}
+else if(country.value=="mm"){window.open("https://t.me/C9AKcpn")}
+else{alert("Select Country")}
 }
-
-else if(country=="mm"){
-window.open("https://t.me/C9AKcpn")
-}
-
-else{
-alert("Select Country First")
-}
-
-}
-
 </script>
-
 </body>
 </html>
