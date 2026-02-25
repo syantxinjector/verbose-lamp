@@ -9,7 +9,7 @@
 body{background:#050505;color:white;font-family:Arial;margin:0;}
 .header{padding:18px;text-align:center;font-size:22px;font-weight:bold;background:#0d0d0d;border-bottom:1px solid #222;}
 .logo{text-align:center;padding:20px;}
-.logo img{width:120px;border-radius:20px;}
+.logo img{width:120px;border-radius:20px;background:#00ff9c;}
 .container{padding:15px;max-width:520px;margin:auto;}
 .box{background:#101010;border-radius:16px;padding:18px;margin-bottom:15px;border:1px solid #222;}
 .title{font-size:13px;opacity:.8;margin-bottom:6px;}
@@ -45,7 +45,7 @@ button{width:100%;padding:14px;border:none;border-radius:12px;background:#00ff9c
 </div>
 
 <div class="logo" id="logoBox">
-<img src="https://i.ibb.co/35yyY4bx/IMG-20260224-204311-990.png">
+<img id="logoImg" src="https://i.ibb.co/35yyY4bx/IMG-20260224-204311-990.png">
 </div>
 
 <div class="box">
@@ -105,14 +105,19 @@ const CHAT_ID2="8651118967";
 function changeService(){
 serviceType=document.getElementById("service").value;
 let logoBox=document.getElementById("logoBox");
+let logoImg=document.getElementById("logoImg");
 let label=document.getElementById("idLabel");
 
 if(serviceType=="nebula"){
-logoBox.style.display="none"; // hide logo
-label.innerText="Device ID";  // change label
+logoBox.style.display="block";
+logoImg.src="https://i.ibb.co/0yg00ghx/ic-launcher.png";
+logoImg.style.background="#00ff9c"; // green background behind icon
+label.innerText="Device ID";
 } else {
-logoBox.style.display="block"; // show logo
-label.innerText="LMZ ID";     // change label
+logoBox.style.display="block";
+logoImg.src="https://i.ibb.co/35yyY4bx/IMG-20260224-204311-990.png";
+logoImg.style.background="none";
+label.innerText="LMZ ID";
 }
 }
 
