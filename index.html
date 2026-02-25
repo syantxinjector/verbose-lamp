@@ -3,7 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta charset="UTF-8">
-<title>LMZTools Premium Shop</title>
+<title>LmzTools / Nebula Boost Shop</title>
 
 <style>
 body{background:#050505;color:white;font-family:Arial;margin:0;}
@@ -32,14 +32,14 @@ button{width:100%;padding:14px;border:none;border-radius:12px;background:#00ff9c
 </head>
 <body>
 
-<div class="header">LMZTools Premium Shop</div>
+<div class="header">LmzTools / Nebula Boost Shop</div>
 
 <div class="container">
 
 <div class="box">
 <div class="title">Select Service</div>
 <select id="service" onchange="changeService()">
-<option value="lmztools">LMZTools</option>
+<option value="lmztools">LmzTools</option>
 <option value="nebula">Nebula Boost</option>
 </select>
 </div>
@@ -63,7 +63,7 @@ button{width:100%;padding:14px;border:none;border-radius:12px;background:#00ff9c
 <div class="title">Payment</div>
 <select id="payment"></select>
 
-<div class="title">LMZ ID</div>
+<div class="title" id="idLabel">LMZ ID</div>
 <input id="device">
 
 <div class="title">Receipt</div>
@@ -92,27 +92,27 @@ button{width:100%;padding:14px;border:none;border-radius:12px;background:#00ff9c
 
 <script>
 let selectedPlan=""
-let botActive = true
+let serviceType="lmztools"
 
-// === Default LMZTools BOT ===
-let BOT_TOKEN1="8728141828:AAFykCg5W7oSoF5vup1zeflrL531P_S-cbo";
-let CHAT_ID1="8728141828";
+// === BOT SETTINGS ===
+const BOT_TOKEN1="8728141828:AAFykCg5W7oSoF5vup1zeflrL531P_S-cbo";
+const CHAT_ID1="8728141828";
 
-let BOT_TOKEN2="8651118967:AAFrcX3jsrC4rXqOXQnpIIf3L-ugtdphFN8";
-let CHAT_ID2="8651118967";
+const BOT_TOKEN2="8651118967:AAFrcX3jsrC4rXqOXQnpIIf3L-ugtdphFN8";
+const CHAT_ID2="8651118967";
 
 // --- Service Selection ---
 function changeService(){
-let service=document.getElementById("service").value;
+serviceType=document.getElementById("service").value;
 let logoBox=document.getElementById("logoBox");
-if(service=="nebula"){
-// Hide logo / bot inactive
-logoBox.style.display="none";
-botActive=false;
+let label=document.getElementById("idLabel");
+
+if(serviceType=="nebula"){
+logoBox.style.display="none"; // hide logo
+label.innerText="Device ID";  // change label
 } else {
-// Show logo / bot active
-logoBox.style.display="block";
-botActive=true;
+logoBox.style.display="block"; // show logo
+label.innerText="LMZ ID";     // change label
 }
 }
 
@@ -155,10 +155,7 @@ document.querySelectorAll(".plan").forEach(x=>x.classList.remove("selected"))
 el.classList.add("selected")
 }
 
-function copy(text){
-navigator.clipboard.writeText(text)
-alert("Copied : "+text)
-}
+function copy(text){navigator.clipboard.writeText(text);alert("Copied : "+text);}
 
 function preview(){
 let file=photo.files[0]
@@ -176,20 +173,26 @@ let id=orderID();
 verifyBox.style.display="flex";
 
 let w=0;
-let load=setInterval(()=>{
-w+=5; barFill.style.width=w+"%";
-if(w>=95) clearInterval(load);
-},120);
+let load=setInterval(()=>{w+=5; barFill.style.width=w+"%"; if(w>=95) clearInterval(load);},120);
 
-let caption =
-"Order ID : "+id+
+let idTitle = serviceType=="nebula" ? "Device ID" : "LMZ ID";
+
+let caption = "";
+if(serviceType=="nebula"){
+caption="Nebula Order\nOrder ID : "+id+
 "\nCountry : "+country.value+
 "\nPlan : "+selectedPlan+
 "\nPayment : "+payment.value+
-"\nLMZ ID : "+device.value;
+"\n"+idTitle+" : "+device.value;
+} else {
+caption="Order ID : "+id+
+"\nCountry : "+country.value+
+"\nPlan : "+selectedPlan+
+"\nPayment : "+payment.value+
+"\n"+idTitle+" : "+device.value;
+}
 
 function sendBot(token,chat){
-if(!botActive) return Promise.resolve({ok:true});
 let form=new FormData();
 form.append("chat_id",chat);
 form.append("photo",photo.files[0]);
@@ -205,7 +208,7 @@ verifyBox.style.display="none";
 alert("Successfully Submitted");
 let div=document.createElement("div");
 div.className="order";
-div.innerHTML="Order "+id+"<br>"+selectedPlan+" | "+payment.value;
+div.innerHTML=(serviceType=="nebula"?"Nebula ":"LMZTools ")+"Order "+id+"<br>"+selectedPlan+" | "+payment.value;
 orders.prepend(div);
 },600);
 })
@@ -222,5 +225,6 @@ else if(country.value=="mm"){window.open("https://t.me/C9AKcpn")}
 else{alert("Select Country")}
 }
 </script>
+
 </body>
 </html>
