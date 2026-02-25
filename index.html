@@ -4,7 +4,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta charset="UTF-8">
 <title>LmzTools / Nebula Boost Shop</title>
-
 <style>
 body{
   background:#050505;
@@ -27,12 +26,6 @@ body{
 .logo img{
   width:120px;
   border-radius:20px;
-}
-.logo.highlight{
-  background:#00ff9c;
-  display:inline-block;
-  padding:10px;
-  border-radius:25px;
 }
 .container{
   padding:15px;
@@ -161,122 +154,113 @@ button{
 
 <div class="header">LmzTools / Nebula Boost Shop</div>
 
-<div class="logo" id="logoBox">
-<img id="logoImg" src="https://i.ibb.co/35yyY4bx/IMG-20260224-204311-990.png">
+<div class="logo">
+  <img id="logoImg" src="https://i.ibb.co/35yyY4bx/IMG-20260224-204311-990.png">
 </div>
 
 <div class="container">
 
-<div class="box">
-<div class="title">Service Type</div>
-<select id="serviceType" onchange="changeService()">
-<option value="">Select Service</option>
-<option value="lmz">LmzTools</option>
-<option value="nebula">Nebula Boost</option>
-</select>
-</div>
+  <div class="box">
+    <div class="title">Service Type</div>
+    <select id="serviceType" onchange="changeService()">
+      <option value="lmz">Lmz Tools</option>
+      <option value="nebula">Nebula Boost</option>
+    </select>
+  </div>
 
-<div class="box">
-<div class="title">Country</div>
-<select id="country" onchange="changeCountry()">
-<option value="">Select Country</option>
-<option value="ph">Philippines</option>
-<option value="mm">Myanmar</option>
-</select>
-</div>
+  <div class="box">
+    <div class="title">Country</div>
+    <select id="country" onchange="changeCountry()">
+      <option value="">Select Country</option>
+      <option value="ph">Philippines</option>
+      <option value="mm">Myanmar</option>
+    </select>
+  </div>
 
-<div class="box" id="plans"></div>
+  <div class="box" id="plans"></div>
 
-<div class="box">
-<div class="title" id="idLabel">LMZ ID</div>
-<input id="device">
+  <div class="box">
+    <div class="title" id="idTitle">LMZ ID</div>
+    <input id="device">
 
-<div class="title">Payment</div>
-<select id="payment"></select>
+    <div class="title">Receipt</div>
+    <input type="file" id="photo" onchange="preview()">
 
-<div class="title">Receipt</div>
-<input type="file" id="photo" onchange="preview()">
+    <img id="imgPreview" class="preview">
 
-<img id="imgPreview" class="preview">
+    <button onclick="send()">Submit Order</button>
+    <button class="contact" onclick="contactOwner()">Contact Owner</button>
+  </div>
 
-<button onclick="send()">Submit Order</button>
-<button class="contact" onclick="contactOwner()">Contact Owner</button>
-</div>
-
-<div class="box admin">
-<div class="title">Recent Orders</div>
-<div id="orders"></div>
-</div>
+  <div class="box admin">
+    <div class="title">Recent Orders</div>
+    <div id="orders"></div>
+  </div>
 
 </div>
 
 <div class="verify" id="verifyBox">
-<div class="spinner"></div>
-<div style="margin-top:10px">AI Checking Payment...</div>
-<div class="bar"><div class="fill" id="barFill"></div></div>
+  <div class="spinner"></div>
+  <div style="margin-top:10px">AI Checking Payment...</div>
+  <div class="bar">
+    <div class="fill" id="barFill"></div>
+  </div>
 </div>
 
 <script>
 let selectedPlan="";
 
-// === BOT SETTINGS ===
+// BOT TOKENS
 const BOT_LMZ="8728141828:AAFykCg5W7oSoF5vup1zeflrL531P_S-cbo";
 const CHAT_LMZ="8728141828";
 
 const BOT_NEBULA="8651118967:AAFrcX3jsrC4rXqOXQnpIIf3L-ugtdphFN8";
 const CHAT_NEBULA="8651118967";
 
-// --- DOM Elements ---
-const logoBox=document.getElementById("logoBox");
-const logoImg=document.getElementById("logoImg");
-const idLabel=document.getElementById("idLabel");
-const country=document.getElementById("country");
-const payment=document.getElementById("payment");
-const device=document.getElementById("device");
-const plans=document.getElementById("plans");
-const photo=document.getElementById("photo");
-const imgPreview=document.getElementById("imgPreview");
-const verifyBox=document.getElementById("verifyBox");
-const barFill=document.getElementById("barFill");
-const orders=document.getElementById("orders");
-const serviceType=document.getElementById("serviceType");
-
-// --- Functions ---
-function orderID(){ return "LMZ"+Math.floor(Math.random()*999999); }
-
 function changeService(){
-  if(serviceType.value=="nebula"){
-    logoBox.classList.add("highlight");
-    logoImg.src="https://i.ibb.co/0yg00ghx/ic-launcher.png";
-    idLabel.innerText="Device ID";
-  }else{
-    logoBox.classList.remove("highlight");
+  const service=document.getElementById("serviceType").value;
+  const logoImg=document.getElementById("logoImg");
+  const idTitle=document.getElementById("idTitle");
+
+  if(service==="nebula"){
+    logoImg.src="https://i.ibb.co/0yg00ghx/ic-launcher.png"; 
+    idTitle.innerText="Device ID";
+  } else {
     logoImg.src="https://i.ibb.co/35yyY4bx/IMG-20260224-204311-990.png";
-    idLabel.innerText="LMZ ID";
+    idTitle.innerText="LMZ ID";
   }
+  selectedPlan="";
+  plans.innerHTML="";
+  payment.innerHTML="";
 }
 
+function orderID(){ return "LMZ"+Math.floor(Math.random()*999999); }
+
 function changeCountry(){
-  if(country.value=="ph"){
+  const c = country.value;
+  if(c==="ph"){
     plans.innerHTML=`
-    <div class="plan" onclick="pick(this,'Permanent')"><div>Permanent</div><div>12$</div></div>
-    <div class="plan" onclick="pick(this,'30 Days')"><div>30 Days</div><div>11$</div></div>
-    <div class="plan" onclick="pick(this,'15 Days')"><div>15 Days</div><div>10$</div></div>
-    <div class="note">
-    PayPal<br><span class="copy" onclick="copy('johnleomodz@gmail.com')">johnleomodz@gmail.com</span><br><br>
-    Binance<br><span class="copy" onclick="copy('1178765602')">1178765602</span><br><br>
-    GCash<br><span class="copy" onclick="copy('09771167734')">09771167734</span>
-    </div>`;
+      <div class="plan" onclick="pick(this,'Permanent')"><div>Permanent</div><div>12$</div></div>
+      <div class="plan" onclick="pick(this,'30 Days')"><div>30 Days</div><div>11$</div></div>
+      <div class="plan" onclick="pick(this,'15 Days')"><div>15 Days</div><div>10$</div></div>
+      <div class="note">
+        PayPal<br><span class="copy" onclick="copy('johnleomodz@gmail.com')">johnleomodz@gmail.com</span><br><br>
+        Binance<br><span class="copy" onclick="copy('1178765602')">1178765602</span><br><br>
+        GCash<br><span class="copy" onclick="copy('09771167734')">09771167734</span>
+      </div>
+    `;
     payment.innerHTML=`<option>PayPal</option><option>Binance</option><option>GCash</option>`;
   }
-  if(country.value=="mm"){
+  if(c==="mm"){
     plans.innerHTML=`
-    <div class="plan" onclick="pick(this,'15 Days')"><div>15 Days</div><div>10,000 MMK</div></div>
-    <div class="plan" onclick="pick(this,'30 Days')"><div>30 Days</div><div>15,000 MMK</div></div>
-    <div class="plan" onclick="pick(this,'Lifetime')"><div>Lifetime</div><div>35,000 MMK</div></div>
-    <div class="note">
-    WAVE Account<br><span class="copy" onclick="copy('09452893480')">09452893480</span><br>Name - Htwe Htwe Ei<br><br>
-    KPay Account<br><span class="copy" onclick="copy('0943171889')">0943171889</span><br>Name - Hnin Yupar Aye </div>`;
+      <div class="plan" onclick="pick(this,'15 Days')"><div>15 Days</div><div>10,000 MMK</div></div>
+      <div class="plan" onclick="pick(this,'30 Days')"><div>30 Days</div><div>15,000 MMK</div></div>
+      <div class="plan" onclick="pick(this,'Lifetime')"><div>Lifetime</div><div>35,000 MMK</div></div>
+      <div class="note">
+        WAVE Account<br><span class="copy" onclick="copy('09452893480')">09452893480</span><br>Name - Htwe Htwe Ei<br><br>
+        KPay Account<br><span class="copy" onclick="copy('0943171889')">0943171889</span><br>Name - Hnin Yupar Aye
+      </div>
+    `;
     payment.innerHTML=`<option>WAVE</option><option>KPay</option>`;
   }
 }
@@ -303,29 +287,28 @@ function preview(){
 }
 
 function send(){
-  if(!serviceType.value){ alert("Select Service"); return; }
-  if(!selectedPlan){ alert("Select Plan"); return; }
-  if(!photo.files[0]){ alert("Upload Receipt"); return; }
+  if(!selectedPlan){alert("Select Plan");return;}
+  if(!photo.files[0]){alert("Upload Receipt"); return;}
 
+  let service=document.getElementById("serviceType").value;
+  let idTitle = service==="nebula"?"Device ID":"LMZ ID";
+  let idVal=document.getElementById("device").value;
   let id=orderID();
-  verifyBox.style.display="flex";
 
+  verifyBox.style.display="flex";
   let w=0;
-  let load=setInterval(()=>{
-    w+=5; barFill.style.width=w+"%";
-    if(w>=95) clearInterval(load);
-  },120);
+  let load=setInterval(()=>{w+=5; barFill.style.width=w+"%"; if(w>=95) clearInterval(load);},120);
 
   let caption =
+  (service==="nebula"?"Nebula Order\n":"LMZ Order\n")+
   "Order ID : "+id+
-  "\nService : "+serviceType.value.toUpperCase()+
   "\nCountry : "+country.value+
   "\nPlan : "+selectedPlan+
   "\nPayment : "+payment.value+
-  "\n"+(serviceType.value=="lmz"?"LMZ ID":"Device ID")+" : "+device.value;
+  "\n"+idTitle+" : "+idVal;
 
-  let token=(serviceType.value=="lmz")?BOT_LMZ:BOT_NEBULA;
-  let chat=(serviceType.value=="lmz")?CHAT_LMZ:CHAT_NEBULA;
+  let token = service==="nebula"?BOT_NEBULA:BOT_LMZ;
+  let chat  = service==="nebula"?CHAT_NEBULA:CHAT_LMZ;
 
   let form=new FormData();
   form.append("chat_id",chat);
@@ -341,7 +324,7 @@ function send(){
       alert("Successfully Submitted");
       let div=document.createElement("div");
       div.className="order";
-      div.innerHTML="Order "+id+"<br>"+selectedPlan+" | "+payment.value;
+      div.innerHTML=(service==="nebula"?"Nebula ":"LMZTools ")+"Order "+id+" | "+selectedPlan;
       orders.prepend(div);
     },600);
   })
@@ -353,10 +336,9 @@ function send(){
 }
 
 function contactOwner(){
-  if(serviceType.value=="lmz" && country.value=="ph"){window.open("https://t.me/Crazydree")}
-  else if(serviceType.value=="lmz" && country.value=="mm"){window.open("https://t.me/C9AKcpn")}
-  else if(serviceType.value=="nebula"){window.open("https://t.me/Crazydree")}
-  else{alert("Select Service & Country")}
+  let service=document.getElementById("serviceType").value;
+  if(service==="nebula"){window.open("https://t.me/C9AKcpn")}
+  else{window.open("https://t.me/Crazydree")}
 }
 </script>
 
